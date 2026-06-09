@@ -1,0 +1,175 @@
+"""
+server.py — MCP server que expone el Abu Engine + la doctrina de Lilly.
+
+Tools:
+  calcular_transitos(fecha?, ventana_dias?) — cielo colectivo del día/ventana
+  cielo_instante(fecha, lat?, lon?)         — carta de un instante puntual
+  traer_doctrina(tema, tags?, k?)           — recuperación doctrinal (ai-oracle)
+
+El server NO calcula nada: delega todo cómputo al engine vía HTTP (abu_client)
+y la doctrina a la recuperación léxica (doctrine). Respeta la separación
+determinista (engine) / interpretación (capa LLM).
+
+Arranque:  python server.py     (stdio MCP)
+Config:    todo por env var — ver .env.example
+"""
+from __future__ import annotations
+
+from typing import Any
+
+from mcp.server.fastmcp import FastMCP
+
+import abu_client
+import config
+import doctrine
+
+mcp = FastMCP("abu-oracle")
+
+
+def _configuraciones_desde_aspectos(aspectos: list[dict]) -> list[dict]:
+    """
+    Traduce los aspectos crudos de chart-detailed a 'configuraciones activas'
+    del cielo, ordenadas por exactitud (orbe ascendente).
+    """
+    configs = [
+        {
+            "planeta_a": a.get("a"),
+            "planeta_b": a.get("b"),
+            "aspecto": a.get("type"),
+            "orbe": a.get("orb"),
+            "angulo": a.get("angle"),
+        }
+        for a in aspectos
+    ]
+    configs.sort(key=lambda c: (c["orbe"] is None, c["orbe"]))
+    return configs
+
+
+@mcp.tool()
+def calcular_transitos(fecha: str = "", ventana_dias: int = 14) -> dict[str, Any]:
+    """
+    Cielo colectivo (tránsitos mundanos) para una fecha y su ventana próxima.
+
+    Devuelve las configuraciones planetarias activas del día (aspectos entre
+    planetas, independientes de la ubicación) y, si el engine tiene desplegado
+    el módulo mundana, lo enriquece con configuraciones nombradas y p-values
+    empíricos del corpus H_mundana_A.
+
+    Args:
+        fecha: ISO (YYYY-MM-DD o YYYY-MM-DDTHH:MM:SSZ). Vacío = hoy (UTC).
+        ventana_dias: días hacia adelante para configuraciones próximas (mundana).
+
+    Returns:
+        {
+          fecha, posiciones[], configuraciones_activas[],
+          mundana_enrichment: bool,
+          mundana: {sky, forecast} | null,
+          fuente
+        }
+    """
+    fecha_iso = abu_client.normalize_date(fecha)
+
+    # Cielo geocéntrico: los aspectos no dependen de lat/lon → usamos (0,0).
+    chart = abu_client.chart_detailed(fecha_iso, lat=0.0, lon=0.0)
+
+    posiciones = [
+        {
+            "planeta": p.get("name"),
+            "longitud": p.get("longitude"),
+            "signo": p.get("sign"),
+            "posicion": p.get("formatted"),
+            "dignidad": p.get("dignity_traditional") or p.get("dignity_score"),
+        }
+        for p in chart.get("planets", [])
+    ]
+    configuraciones = _configuraciones_desde_aspectos(chart.get("aspects", []))
+
+    # Enriquecimiento mundana (opcional — solo si la ruta existe en el engine).
+    sky = abu_client.mundana_sky()
+    forecast = abu_client.mundana_forecast(ventana_dias) if sky is not None else None
+    enriched = sky is not None
+
+    return {
+        "fecha": fecha_iso,
+        "posiciones": posiciones,
+        "configuraciones_activas": configuraciones,
+        "mundana_enrichment": enriched,
+        "mundana": {"sky": sky, "forecast": forecast} if enriched else None,
+        "fuente": "abu-engine /api/astro/chart-detailed"
+        + (" + /api/mundana/*" if enriched else " (mundana no desplegada en esta imagen)"),
+    }
+
+
+@mcp.tool()
+def cielo_instante(fecha: str, lat: float = 0.0, lon: float = 0.0) -> dict[str, Any]:
+    """
+    Carta del cielo para un instante y ubicación arbitrarios (incluye pasado).
+
+    A diferencia de calcular_transitos (colectivo, geocéntrico), esto sitúa el
+    cielo en un lugar: agrega casas Placidus, Ascendente, Medio Cielo y la
+    Parte de la Fortuna locales.
+
+    Args:
+        fecha: ISO (YYYY-MM-DD o con hora). Requerido.
+        lat: latitud decimal (default 0 = ecuador).
+        lon: longitud decimal (default 0 = Greenwich).
+
+    Returns:
+        {fecha, ubicacion, ascendente, medio_cielo, posiciones[],
+         configuraciones[], parte_fortuna, fuente}
+    """
+    fecha_iso = abu_client.normalize_date(fecha)
+    chart = abu_client.chart_detailed(fecha_iso, lat=lat, lon=lon)
+
+    posiciones = [
+        {
+            "planeta": p.get("name"),
+            "longitud": p.get("longitude"),
+            "signo": p.get("sign"),
+            "posicion": p.get("formatted"),
+            "casa": p.get("house"),
+            "dignidad": p.get("dignity_traditional"),
+        }
+        for p in chart.get("planets", [])
+    ]
+
+    return {
+        "fecha": fecha_iso,
+        "ubicacion": chart.get("location"),
+        "ascendente": chart.get("asc"),
+        "medio_cielo": chart.get("mc"),
+        "posiciones": posiciones,
+        "configuraciones": _configuraciones_desde_aspectos(chart.get("aspects", [])),
+        "parte_fortuna": chart.get("arabic_parts", {}).get("part_of_fortune"),
+        "fuente": "abu-engine /api/astro/chart-detailed",
+    }
+
+
+@mcp.tool()
+def traer_doctrina(tema: str, tags: list[str] | None = None, k: int = 3) -> dict[str, Any]:
+    """
+    Recupera fragmentos doctrinales relevantes del corpus de Abu Oracle.
+
+    Fuente: repo ai-oracle (system prompt de Lilly, Axiomática de los Cielos,
+    técnicas persas, Grimoire, registro de voz). Retrieval léxico por palabras
+    clave — devuelve el material para que la capa interpretativa lo cite.
+
+    Args:
+        tema: consulta en lenguaje natural (ej. "dignidad de Saturno", "secta").
+        tags: términos adicionales para afinar (ej. ["firdaria", "profección"]).
+        k: cantidad de fragmentos a devolver (default 3).
+
+    Returns:
+        {tema, resultados: [{fuente, titulo, fragmento, score}], fuentes_indexadas}
+    """
+    resultados = doctrine.retrieve(tema, tags, k)
+    return {
+        "tema": tema,
+        "tags": tags or [],
+        "resultados": resultados,
+        "fuentes_indexadas": doctrine.source_status(),
+    }
+
+
+if __name__ == "__main__":
+    mcp.run()
