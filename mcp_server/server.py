@@ -46,6 +46,38 @@ def _configuraciones_desde_aspectos(aspectos: list[dict]) -> list[dict]:
     return configs
 
 
+def _anotar_fase(configs: list[dict], fecha_iso: str, lat: float, lon: float) -> None:
+    """
+    Clasifica cada configuración como aplicativa (el orbe se cierra hacia el
+    exacto) o separativa (ya perfeccionó y se abre), comparando contra el
+    mismo cielo 12 horas después. Sin este dato el intérprete no puede saber
+    la dirección del aspecto — y no debe suponerla.
+    Non-fatal: si la segunda lectura falla, fase = "indeterminada".
+    """
+    try:
+        from datetime import datetime, timedelta
+        dt = datetime.fromisoformat(fecha_iso.replace("Z", "+00:00")) + timedelta(hours=12)
+        futuro = abu_client.chart_detailed(dt.strftime("%Y-%m-%dT%H:%M:%SZ"), lat, lon)
+        orbes_futuros: dict = {}
+        for a in futuro.get("aspects", []):
+            key = (frozenset((a.get("a"), a.get("b"))), a.get("type"))
+            orbes_futuros[key] = a.get("orb")
+        for c in configs:
+            key = (frozenset((c["planeta_a"], c["planeta_b"])), c["aspecto"])
+            orb_f = orbes_futuros.get(key)
+            if orb_f is None or c["orbe"] is None:
+                c["fase"] = "indeterminada"
+            elif orb_f < c["orbe"]:
+                c["fase"] = "aplicativo"
+            elif orb_f > c["orbe"]:
+                c["fase"] = "separativo"
+            else:
+                c["fase"] = "estacionario"
+    except Exception:
+        for c in configs:
+            c.setdefault("fase", "indeterminada")
+
+
 @mcp.tool()
 def calcular_transitos(fecha: str = "", ventana_dias: int = 14) -> dict[str, Any]:
     """
@@ -84,6 +116,7 @@ def calcular_transitos(fecha: str = "", ventana_dias: int = 14) -> dict[str, Any
         for p in chart.get("planets", [])
     ]
     configuraciones = _configuraciones_desde_aspectos(chart.get("aspects", []))
+    _anotar_fase(configuraciones, fecha_iso, 0.0, 0.0)
 
     # Enriquecimiento mundana (opcional — solo si la ruta existe en el engine).
     sky = abu_client.mundana_sky()
@@ -134,13 +167,15 @@ def cielo_instante(fecha: str, lat: float = 0.0, lon: float = 0.0) -> dict[str, 
         for p in chart.get("planets", [])
     ]
 
+    configuraciones = _configuraciones_desde_aspectos(chart.get("aspects", []))
+    _anotar_fase(configuraciones, fecha_iso, lat, lon)
     return {
         "fecha": fecha_iso,
         "ubicacion": chart.get("location"),
         "ascendente": chart.get("asc"),
         "medio_cielo": chart.get("mc"),
         "posiciones": posiciones,
-        "configuraciones": _configuraciones_desde_aspectos(chart.get("aspects", [])),
+        "configuraciones": configuraciones,
         "parte_fortuna": chart.get("arabic_parts", {}).get("part_of_fortune"),
         "fuente": "abu-engine /api/astro/chart-detailed",
     }
