@@ -1,0 +1,129 @@
+{
+  "tema": "conjunction Venus Jupiter",
+  "tags": [
+    "venus",
+    "jupiter"
+  ],
+  "resultados": [
+    {
+      "fuente": "next_app\\lib\\lilly-prompt.ts",
+      "titulo": "1. SECT",
+      "fragmento": "Every chart is either diurnal (Sun above horizon at birth) or nocturnal. This determines which planets operate in their full strength:\n- Diurnal chart: Sun, Jupiter, Saturn are the benefic/neutral/malefic of sect. Jupiter is the greater benefic. Saturn, though malefic, is contained. Mars is out of sect — more disruptive.\n- Nocturnal chart: Moon, Venus, Mars are the sect planets. Venus is the greater benefic. Mars is contained. Saturn is out of sect — more oppressive.\nThis is not decorative. Sect changes the weight of every planetary interpretation.",
+      "score": 2.0
+    },
+    {
+      "fuente": "docs\\theory\\KG_ONTOLOGY_SCHEMA.md",
+      "titulo": "Carta nocturna → maestra de secta nominal: Venus",
+      "fragmento": "Venus [peregrina, Leo, Casa6] → sin dignidad en dominio propio",
+      "score": 1.5
+    },
+    {
+      "fuente": "docs\\theory\\GRAPHRAG_KG_VISION.md",
+      "titulo": "4.4 JOIN temporal-geográfico (horizonte más potente)",
+      "fragmento": "```\nsignificador Casa 7\n  → activo en dasha Venus (2027-2030)\n  → HF score alto en Lisboa [dominio: relaciones]\n```\nEsta consulta unifica timing y geografía sobre el mismo nodo en el grafo. No existe en ningún sistema de astrología computacional actual. (Axioma 9.3.)\n\n---",
+      "score": 1.0
+    }
+  ],
+  "fuentes_indexadas": [
+    {
+      "fuente": "AXIOMATICS_OF_HEAVENS_v0.4.md",
+      "encontrada": true,
+      "formato": ".md"
+    },
+    {
+      "fuente": "LILLY_QUOTES.md",
+      "encontrada": true,
+      "formato": ".md"
+    },
+    {
+      "fuente": "docs\\concepts\\AbuOracle_axiom_en_v05.docx",
+      "encontrada": true,
+      "formato": ".docx"
+    },
+    {
+      "fuente": "docs\\concepts\\AbuOracle_axiom_es_v05.docx",
+      "encontrada": true,
+      "formato": ".docx"
+    },
+    {
+      "fuente": "docs\\concepts\\AbuOracle_canon_en_v2.docx",
+      "encontrada": true,
+      "formato": ".docx"
+    },
+    {
+      "fuente": "docs\\concepts\\AbuOracle_canon_es_v2.docx",
+      "encontrada": true,
+      "formato": ".docx"
+    },
+    {
+      "fuente": "docs\\concepts\\Grimoire_Master.md",
+      "encontrada": true,
+      "formato": ".md"
+    },
+    {
+      "fuente": "docs\\theory\\FORMALIZACION_MATEMATICA_ALGORITMOS.md",
+      "encontrada": true,
+      "formato": ".md"
+    },
+    {
+      "fuente": "docs\\theory\\GRAPHRAG_KG_VISION.md",
+      "encontrada": true,
+      "formato": ".md"
+    },
+    {
+      "fuente": "docs\\theory\\KG_EXPERIMENT_PROTOCOL.md",
+      "encontrada": true,
+      "formato": ".md"
+    },
+    {
+      "fuente": "docs\\theory\\KG_ONTOLOGY_SCHEMA.md",
+      "encontrada": true,
+      "formato": ".md"
+    },
+    {
+      "fuente": "docs\\theory\\LILLY_AS_PARADIGM_DIALOGUE.md",
+      "encontrada": true,
+      "formato": ".md"
+    },
+    {
+      "fuente": "next_app\\lib\\lilly-prompt.ts",
+      "encontrada": true,
+      "formato": ".ts"
+    },
+    {
+      "fuente": "obsidian_vault\\02_doctrina\\AXIOMATICS_v0_3.md",
+      "encontrada": true,
+      "formato": ".md"
+    },
+    {
+      "fuente": "obsidian_vault\\02_doctrina\\AXIOMATICS_v0_4.md",
+      "encontrada": true,
+      "formato": ".md"
+    },
+    {
+      "fuente": "obsidian_vault\\04_hipotesis\\AXIOM_0_MECANISMO.md",
+      "encontrada": true,
+      "formato": ".md"
+    },
+    {
+      "fuente": "obsidian_vault\\04_hipotesis\\H01_domain_specificity.md",
+      "encontrada": true,
+      "formato": ".md"
+    },
+    {
+      "fuente": "obsidian_vault\\04_hipotesis\\H01b_significator_speed.md",
+      "encontrada": true,
+      "formato": ".md"
+    },
+    {
+      "fuente": "obsidian_vault\\04_hipotesis\\HIPOTESIS_REGISTRO.md",
+      "encontrada": true,
+      "formato": ".md"
+    },
+    {
+      "fuente": "obsidian_vault\\persian_techniques.md",
+      "encontrada": true,
+      "formato": ".md"
+    }
+  ]
+}

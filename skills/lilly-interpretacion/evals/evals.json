@@ -1,0 +1,20 @@
+{
+  "skill_name": "lilly-interpretacion",
+  "note": "Inputs en evals/inputs/: sky.json (output de calcular_transitos) y doctrina.json (output de traer_doctrina). Cielo del 2026-06-09: Venus conjunción Júpiter, orbe 0.19°, enrichment mundana activo.",
+  "evals": [
+    {
+      "id": 0,
+      "name": "post-bluesky-cielo-hoy",
+      "prompt": "Escribí un post de Bluesky (máximo 300 caracteres) sobre el cielo de hoy. Usá los datos de sky.json y la doctrina de doctrina.json. En español.",
+      "files": ["inputs/sky.json", "inputs/doctrina.json"],
+      "expected_output": "Post <=300 chars, nombra la configuración concreta (Venus-Júpiter) con su orbe, aplica doctrina citada, voz de Lilly (sin 'energía', sin horóscopo genérico, no oracular), cierra con CTA a app.abu-oracle.com."
+    },
+    {
+      "id": 1,
+      "name": "interpretar-venus-jupiter",
+      "prompt": "Interpretá la configuración más exacta del cielo de hoy en la voz de Lilly, en 4-5 líneas. Usá sky.json y doctrina.json. En español.",
+      "files": ["inputs/sky.json", "inputs/doctrina.json"],
+      "expected_output": "Interpretación específica de Venus conjunción Júpiter: aplica dignidad/secta donde corresponda, cita doctrina, interpreta (no describe), sin 'energía', sin predicción como certeza."
+    }
+  ]
+}

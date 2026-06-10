@@ -51,11 +51,24 @@ def test_traer_doctrina() -> None:
     assert out["resultados"][0]["fragmento"], "fragmento vacío"
 
 
+def test_consultar_biblioteca() -> None:
+    out = server.consultar_biblioteca("Mars Saturn opposition effects", k=3)
+    assert "error" not in out or not out["error"], f"biblioteca error: {out.get('error')}"
+    assert out["resultados"], "biblioteca sin resultados para consulta clásica"
+    primero = out["resultados"][0]
+    assert primero["autor"] and primero["libro"] and primero["pagina"], "cita incompleta"
+    assert len(out["catalogo_disponible"]) >= 10, "catálogo menor al esperado (12 libros)"
+    # Filtro por tradición devuelve solo esa tradición
+    jy = server.consultar_biblioteca("benefic planets", tradicion="jyotish", k=3)
+    assert all(r["tradicion"] == "jyotish" for r in jy["resultados"]), "filtro tradición roto"
+
+
 _TESTS = [
     ("engine alcanzable", test_engine_alcanzable),
     ("calcular_transitos", test_calcular_transitos),
     ("cielo_instante", test_cielo_instante),
     ("traer_doctrina", test_traer_doctrina),
+    ("consultar_biblioteca", test_consultar_biblioteca),
 ]
 
 

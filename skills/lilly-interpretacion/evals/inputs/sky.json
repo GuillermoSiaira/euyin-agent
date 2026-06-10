@@ -1,0 +1,180 @@
+{
+  "fecha": "2026-06-09T15:24:15Z",
+  "posiciones": [
+    {
+      "planeta": "Sun",
+      "longitud": 78.4457,
+      "signo": "Gemini",
+      "posicion": "18°26' Gemini",
+      "dignidad": "peregrine"
+    },
+    {
+      "planeta": "Moon",
+      "longitud": 3.4606,
+      "signo": "Aries",
+      "posicion": "3°27' Aries",
+      "dignidad": "peregrine"
+    },
+    {
+      "planeta": "Mercury",
+      "longitud": 101.8458,
+      "signo": "Cancer",
+      "posicion": "11°50' Cancer",
+      "dignidad": "peregrine"
+    },
+    {
+      "planeta": "Venus",
+      "longitud": 115.1878,
+      "signo": "Cancer",
+      "posicion": "25°11' Cancer",
+      "dignidad": "peregrine"
+    },
+    {
+      "planeta": "Mars",
+      "longitud": 45.764,
+      "signo": "Taurus",
+      "posicion": "15°45' Taurus",
+      "dignidad": "detriment"
+    },
+    {
+      "planeta": "Jupiter",
+      "longitud": 115.3734,
+      "signo": "Cancer",
+      "posicion": "25°22' Cancer",
+      "dignidad": "peregrine"
+    },
+    {
+      "planeta": "Saturn",
+      "longitud": 12.5602,
+      "signo": "Aries",
+      "posicion": "12°33' Aries",
+      "dignidad": "peregrine"
+    },
+    {
+      "planeta": "Uranus",
+      "longitud": 62.1939,
+      "signo": "Gemini",
+      "posicion": "2°11' Gemini",
+      "dignidad": "peregrine"
+    },
+    {
+      "planeta": "Neptune",
+      "longitud": 3.8384,
+      "signo": "Aries",
+      "posicion": "3°50' Aries",
+      "dignidad": "peregrine"
+    },
+    {
+      "planeta": "Pluto",
+      "longitud": 304.8787,
+      "signo": "Aquarius",
+      "posicion": "4°52' Aquarius",
+      "dignidad": "peregrine"
+    },
+    {
+      "planeta": "North Node",
+      "longitud": 75.3237,
+      "signo": "Gemini",
+      "posicion": "15°19' Gemini",
+      "dignidad": "peregrine"
+    },
+    {
+      "planeta": "South Node",
+      "longitud": 255.3237,
+      "signo": "Sagittarius",
+      "posicion": "15°19' Sagittarius",
+      "dignidad": "peregrine"
+    }
+  ],
+  "configuraciones_activas": [
+    {
+      "planeta_a": "Venus",
+      "planeta_b": "Jupiter",
+      "aspecto": "conjunction",
+      "orbe": 0.19,
+      "angulo": 0.19
+    },
+    {
+      "planeta_a": "Moon",
+      "planeta_b": "Neptune",
+      "aspecto": "conjunction",
+      "orbe": 0.38,
+      "angulo": 0.38
+    },
+    {
+      "planeta_a": "Mercury",
+      "planeta_b": "Saturn",
+      "aspecto": "square",
+      "orbe": 0.71,
+      "angulo": 89.29
+    },
+    {
+      "planeta_a": "Neptune",
+      "planeta_b": "Pluto",
+      "aspecto": "sextile",
+      "orbe": 1.04,
+      "angulo": 58.96
+    },
+    {
+      "planeta_a": "Moon",
+      "planeta_b": "Uranus",
+      "aspecto": "sextile",
+      "orbe": 1.27,
+      "angulo": 58.73
+    },
+    {
+      "planeta_a": "Moon",
+      "planeta_b": "Pluto",
+      "aspecto": "sextile",
+      "orbe": 1.42,
+      "angulo": 58.58
+    },
+    {
+      "planeta_a": "Uranus",
+      "planeta_b": "Neptune",
+      "aspecto": "sextile",
+      "orbe": 1.64,
+      "angulo": 58.36
+    },
+    {
+      "planeta_a": "Uranus",
+      "planeta_b": "Pluto",
+      "aspecto": "trine",
+      "orbe": 2.68,
+      "angulo": 117.32
+    },
+    {
+      "planeta_a": "Mercury",
+      "planeta_b": "Mars",
+      "aspecto": "sextile",
+      "orbe": 3.92,
+      "angulo": 56.08
+    },
+    {
+      "planeta_a": "Sun",
+      "planeta_b": "Saturn",
+      "aspecto": "sextile",
+      "orbe": 5.89,
+      "angulo": 65.89
+    }
+  ],
+  "mundana_enrichment": true,
+  "mundana": {
+    "sky": {
+      "date": "2026-06-09T15:24:16Z",
+      "planets": {
+        "sun": 78.7952,
+        "moon": 3.6034,
+        "mercury": 102.1901,
+        "venus": 115.5349,
+        "mars": 46.1181,
+        "jupiter": 115.7369,
+        "saturn": 12.9279,
+        "neptune": 4.2079
+      },
+      "active_configurations": []
+    },
+    "forecast": []
+  },
+  "fuente": "abu-engine /api/astro/chart-detailed + /api/mundana/*"
+}

@@ -1,0 +1,1 @@
+Hoy los dos benéficos se abrazan: Venus y Júpiter en conjunción casi exacta en Cáncer (25°). El don mayor de la noche y el del día en el signo de la Luna: ternura, abundancia, hogar. Mientras, Luna junto a Neptuno en Aries disuelve los bordes del deseo. Día para recibir, no forzar.

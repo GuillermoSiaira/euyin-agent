@@ -22,7 +22,8 @@ euyin-agent/
 |---|---|---|
 | `calcular_transitos(fecha?, ventana_dias?)` | Cielo colectivo del día: configuraciones activas. Se enriquece con p-values empíricos si el engine tiene mundana. | `/api/astro/chart-detailed` (+ `/api/mundana/*`) |
 | `cielo_instante(fecha, lat?, lon?)` | Carta del cielo para un instante y lugar arbitrarios (incluye pasado). | `/api/astro/chart-detailed` |
-| `traer_doctrina(tema, tags?, k?)` | Recupera fragmentos doctrinales. | repo `ai-oracle` (retrieval léxico) |
+| `traer_doctrina(tema, tags?, k?)` | Doctrina INTERNA de Abu Oracle (Axiomática, canon, system prompt). | repo `ai-oracle` (retrieval léxico, 20 fuentes) |
+| `consultar_biblioteca(pregunta, tradicion?, libro?, k?)` | FUENTES PRIMARIAS clásicas con cita por autor/libro/página: Ptolomeo, Lilly 1852, Al-Biruni, Jyotish, Kayser. 12 libros, ~17k pasajes, filtro por tradición. | índice BM25 construido por `ai-oracle/scripts/mundana/doctrinal_rag.py build` |
 
 Endpoints elegidos: públicos, sin auth.
 

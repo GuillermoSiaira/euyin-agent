@@ -20,6 +20,7 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 import abu_client
+import biblioteca
 import config
 import doctrine
 
@@ -169,6 +170,40 @@ def traer_doctrina(tema: str, tags: list[str] | None = None, k: int = 3) -> dict
         "resultados": resultados,
         "fuentes_indexadas": doctrine.source_status(),
     }
+
+
+@mcp.tool()
+def consultar_biblioteca(
+    pregunta: str,
+    tradicion: str = "",
+    libro: str = "",
+    k: int = 5,
+) -> dict[str, Any]:
+    """
+    Consulta los textos primarios clásicos de la biblioteca astrológica.
+
+    Distinto de traer_doctrina (doctrina interna de Abu Oracle): esto busca en
+    las FUENTES PRIMARIAS — Ptolomeo (Tetrabiblos), William Lilly (Introduction
+    to Astrology 1852), Al-Biruni, textos Jyotish, Hans Kayser — y devuelve
+    pasajes con cita verificable (autor, libro, página). Usalo para fundamentar
+    una interpretación en la tradición o comparar escuelas.
+
+    Args:
+        pregunta: consulta en lenguaje natural (ej. "Mars Saturn opposition
+                  effects", "combustión del planeta cerca del Sol"). Los textos
+                  están mayormente en inglés — consultar en inglés recupera más.
+        tradicion: filtro opcional: helenistica | occidental-lilly | persa |
+                   jyotish | armonica | pitagorica.
+        libro: filtro opcional por substring del título.
+        k: cantidad de pasajes (default 5).
+
+    Returns:
+        {pregunta, resultados: [{autor, libro, tradicion, pagina, fragmento,
+         score}], catalogo_disponible}
+    """
+    out = biblioteca.consultar(pregunta, tradicion or None, libro or None, k)
+    out["catalogo_disponible"] = biblioteca.catalogo()
+    return out
 
 
 if __name__ == "__main__":

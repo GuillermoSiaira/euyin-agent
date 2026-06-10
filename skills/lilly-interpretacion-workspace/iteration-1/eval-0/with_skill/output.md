@@ -1,0 +1,1 @@
+Venus conjunta a Júpiter en Cáncer, orbe 0.19° — casi exacta. Los dos benéficos juntos: el de la secta diurna y el de la nocturna. Pero ambos peregrinos: prometen sin garantizar. La tradición lee el encuentro como apertura, no como destino. Dónde te toca depende de tu carta: app.abu-oracle.com

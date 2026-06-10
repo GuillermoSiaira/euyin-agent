@@ -37,12 +37,20 @@ asegurate de tener los dos insumos:
    `configuraciones_activas` (aspectos entre planetas, con su `orbe`), y —si
    `mundana_enrichment` es `true`— el bloque `mundana` con configuraciones
    nombradas y p-values empíricos.
-2. **La doctrina** — de `traer_doctrina(tema, tags)`, donde `tema` es la
-   configuración que vas a interpretar (ej. `"oposición Marte Saturno"`,
-   `"secta nocturna"`). Devuelve fragmentos del corpus para que los cites.
+2. **La doctrina** — dos tools, dos jerarquías de fuente:
+   - `traer_doctrina(tema, tags)` — la doctrina INTERNA de Abu Oracle
+     (Axiomática, canon, system prompt). El marco del sistema.
+   - `consultar_biblioteca(pregunta, tradicion?, libro?)` — las FUENTES
+     PRIMARIAS clásicas (Ptolomeo, Lilly 1852, Al-Biruni, Jyotish, Kayser),
+     con cita verificable por autor/libro/**página**. Consultá en inglés
+     (los textos lo están). Cuando cites un clásico, citá la página:
+     *"Lilly (Introduction to Astrology, p. 372) llama a la oposición el
+     aspecto más poderosamente adverso."* Eso es lo que separa una lectura
+     fundada de un horóscopo.
 
 Si te falta alguno, pedí que se llame a la tool correspondiente antes de
-escribir. Nunca rellenes con datos de memoria.
+escribir. Nunca rellenes con datos de memoria: si la biblioteca no devolvió
+el pasaje, no lo atribuyas.
 
 ## La jerarquía de juicio
 
