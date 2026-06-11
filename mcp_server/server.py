@@ -208,6 +208,92 @@ def traer_doctrina(tema: str, tags: list[str] | None = None, k: int = 3) -> dict
 
 
 @mcp.tool()
+def linea_biografica(
+    fecha_nacimiento: str,
+    lat: float,
+    lon: float,
+    meses_adelante: int = 12,
+) -> dict[str, Any]:
+    """
+    Capa temporal DETERMINISTA de una carta natal: profección anual, firdaria
+    y tránsitos mayores, calculados por Abu Engine (no improvisados).
+
+    Es la fuente correcta para "¿qué período está hablando ahora?" y "¿qué
+    tránsitos vienen?". Devuelve la profección y firdaria activas y siguientes,
+    los tránsitos activos hoy y los próximos exactos dentro de la ventana.
+    Requiere ABU_SERVICE_KEY configurada (endpoint protegido del engine).
+
+    Args:
+        fecha_nacimiento: ISO con hora UTC (ej. "1978-07-06T00:15:00Z").
+        lat: latitud natal decimal.
+        lon: longitud natal decimal.
+        meses_adelante: ventana de tránsitos próximos (default 12, máx ~18).
+
+    Returns:
+        {profeccion: {activa, siguiente}, firdaria: {activa, siguientes},
+         transitos: {activos[], proximos[]}, fuente}
+    """
+    fecha_iso = abu_client.normalize_date(fecha_nacimiento)
+    bio = abu_client.biography(fecha_iso, lat, lon)
+
+    profs = bio.get("profections", [])
+    prof_act_i = next((i for i, p in enumerate(profs) if p.get("is_active")), None)
+    profeccion = {
+        "activa": profs[prof_act_i] if prof_act_i is not None else None,
+        "siguiente": profs[prof_act_i + 1] if prof_act_i is not None and prof_act_i + 1 < len(profs) else None,
+    }
+
+    firs = bio.get("firdaria", [])
+    fir_act_i = next((i for i, f in enumerate(firs) if f.get("is_active")), None)
+    firdaria = {
+        "activa": firs[fir_act_i] if fir_act_i is not None else None,
+        "siguientes": firs[fir_act_i + 1 : fir_act_i + 3] if fir_act_i is not None else [],
+    }
+
+    from datetime import datetime, timedelta, timezone
+    hoy = datetime.now(timezone.utc)
+    limite = hoy + timedelta(days=30.44 * max(1, meses_adelante))
+
+    def _compacto(t: dict) -> dict:
+        return {
+            "transito": t.get("transit_planet"),
+            "aspecto": t.get("aspect"),
+            "natal": t.get("natal_planet"),
+            "exacto": t.get("exact_date"),
+            "activo": bool(t.get("is_active")),
+            "clase": t.get("speed_class", "slow"),
+        }
+
+    def _fecha(t: dict):
+        try:
+            return datetime.fromisoformat(str(t.get("exact_date"))).replace(tzinfo=timezone.utc)
+        except Exception:
+            return None
+
+    ventana = bio.get("transits_window", [])
+    activos = [_compacto(t) for t in ventana if t.get("is_active")]
+    proximos = sorted(
+        (
+            _compacto(t)
+            for t in ventana
+            if not t.get("is_active")
+            and t.get("speed_class", "slow") == "slow"
+            and (f := _fecha(t)) is not None
+            and hoy <= f <= limite
+        ),
+        key=lambda c: c["exacto"] or "",
+    )[:40]
+
+    return {
+        "fecha_nacimiento": fecha_iso,
+        "profeccion": profeccion,
+        "firdaria": firdaria,
+        "transitos": {"activos": activos, "proximos": proximos},
+        "fuente": "abu-engine /api/astro/biography (determinista — profecciones 90 años, firdaria 75, tránsitos ±18m)",
+    }
+
+
+@mcp.tool()
 def consultar_biblioteca(
     pregunta: str,
     tradicion: str = "",

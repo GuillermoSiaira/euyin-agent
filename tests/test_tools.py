@@ -63,12 +63,23 @@ def test_consultar_biblioteca() -> None:
     assert all(r["tradicion"] == "jyotish" for r in jy["resultados"]), "filtro tradición roto"
 
 
+def test_linea_biografica() -> None:
+    if not config.ABU_SERVICE_KEY:
+        print("        (skip: ABU_SERVICE_KEY no configurada)")
+        return
+    out = server.linea_biografica("1978-07-06T00:15:00Z", -37.85, -58.26, meses_adelante=6)
+    assert out["profeccion"]["activa"], "sin profección activa"
+    assert out["firdaria"]["activa"], "sin firdaria activa"
+    assert isinstance(out["transitos"]["activos"], list), "tránsitos activos no es lista"
+
+
 _TESTS = [
     ("engine alcanzable", test_engine_alcanzable),
     ("calcular_transitos", test_calcular_transitos),
     ("cielo_instante", test_cielo_instante),
     ("traer_doctrina", test_traer_doctrina),
     ("consultar_biblioteca", test_consultar_biblioteca),
+    ("linea_biografica", test_linea_biografica),
 ]
 
 

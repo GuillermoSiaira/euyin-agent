@@ -37,6 +37,11 @@ ABU_ENGINE_URL: str = os.environ.get("ABU_ENGINE_URL", "http://localhost:8000").
 # Token Bearer opcional para endpoints protegidos. Vacío = no se envía header.
 ABU_AUTH_TOKEN: str = os.environ.get("ABU_AUTH_TOKEN", "").strip()
 
+# Service key (machine-to-machine) — header X-Abu-Service-Key del engine.
+# Desbloquea los endpoints protegidos (biography, relocation, chart/extended)
+# con identidad de servicio "euyin-agent". Vacío = no se envía.
+ABU_SERVICE_KEY: str = os.environ.get("ABU_SERVICE_KEY", "").strip()
+
 # Raíz del repo ai-oracle (fuente de doctrina).
 ABU_DOCTRINE_ROOT: Path = Path(
     os.environ.get("ABU_DOCTRINE_ROOT", "D:/projects/ai-oracle")
@@ -47,7 +52,10 @@ ABU_HTTP_TIMEOUT: float = float(os.environ.get("ABU_HTTP_TIMEOUT", "45"))
 
 
 def auth_headers() -> dict[str, str]:
-    """Header Authorization solo si hay token configurado."""
+    """Headers de autenticación según lo configurado (service key y/o bearer)."""
+    headers: dict[str, str] = {}
+    if ABU_SERVICE_KEY:
+        headers["X-Abu-Service-Key"] = ABU_SERVICE_KEY
     if ABU_AUTH_TOKEN:
-        return {"Authorization": f"Bearer {ABU_AUTH_TOKEN}"}
-    return {}
+        headers["Authorization"] = f"Bearer {ABU_AUTH_TOKEN}"
+    return headers

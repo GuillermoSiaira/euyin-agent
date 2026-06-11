@@ -61,6 +61,18 @@ def chart_detailed(date_iso: str, lat: float, lon: float) -> dict:
     )
 
 
+def biography(birth_date_iso: str, birth_lat: float, birth_lon: float) -> dict:
+    """
+    GET /api/astro/biography — línea temporal biográfica completa:
+    profecciones (90 años), firdaria (75 años) y tránsitos ±18 meses.
+    Requiere ABU_SERVICE_KEY (o JWT) — endpoint protegido.
+    """
+    return _get(
+        "/api/astro/biography",
+        {"birthDate": birth_date_iso, "birthLat": birth_lat, "birthLon": birth_lon},
+    )
+
+
 def mundana_sky() -> dict | None:
     """
     GET /api/mundana/sky — cielo colectivo + configuraciones mundanas con
