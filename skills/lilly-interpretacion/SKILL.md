@@ -115,6 +115,24 @@ fue narrado como "a horas de su perfección".)
 **Sistema de casas**: Placidus, topocéntrico (convención del motor). El señor de
 la casa precede a sus ocupantes (Abu Mashar).
 
+**Firdaria — convenciones del motor** (verificadas en `abu_engine/core/fardars.py`,
+2026-06-11; existen variantes tradicionales y el motor eligió estas):
+- **Subperíodos proporcionales**: la duración de cada subperíodo es
+  `(años_del_planeta_menor / 75) × años_del_período_mayor` — NO séptimos
+  iguales. Ej.: subperíodo de Marte dentro del período mayor del Sol =
+  10 × 7/75 ≈ 0.93 años.
+- **Nodos al final de la secuencia** (Nodo Norte 3 años, Nodo Sur 2), no
+  intercalados tras Marte.
+- Regla dura: si calculás firdaria a mano, usá ESTAS variantes — o mejor, no
+  calcules a mano: pedí `linea_biografica`, que devuelve los períodos del motor.
+  Este error ocurrió en producción (subperíodos en séptimos iguales de memoria
+  → firdaria activa equivocada, corregida por el motor en auditoría).
+
+> **[CONFIRMAR — Guillermo]** Estas dos elecciones (proporcional + nodos al
+> final) están implementadas y ahora documentadas, pero falta tu confirmación
+> de que son decisión doctrinal deliberada, y su registro en el vault
+> (`persian_techniques.md` o equivalente).
+
 ## Cómo componer un post riguroso
 
 La estructura canónica de un post mundano tiene cuatro movimientos. Adaptá el
