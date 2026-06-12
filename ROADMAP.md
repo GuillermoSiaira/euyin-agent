@@ -1,98 +1,112 @@
-# Roadmap EuYin / Abu Oracle — junio-julio 2026
+# Roadmap EuYin / Abu Oracle — v2 · eje: MONETIZACIÓN
 
-> Fuente de verdad del plan. Actualizado: 2026-06-11.
-> Calibración: tareas medidas en **días/sesiones** (trabajo diario con agentes).
-> Owners: **G** = Guillermo (decisiones, deploys, doctrina) · **F** = Fable/Claude Code
-> (arquitectura, juicio doctrinal) · **A** = Antigravity vía spec (mecánico espec-able).
+> Fuente de verdad del plan. v2: 2026-06-12 (reemplaza v1 — ver git history).
+> Estrategia base: diálogo monetización post-MCP (2026-06-12). Objetivo:
+> **lanzamiento agosto 2026** — Genesis Access a la venta + MCP público.
+> Calibración: días/sesiones. Owners: **G** = Guillermo (decisiones, deploys,
+> publicación) · **F** = Fable/Claude Code (arquitectura, juicio, specs) ·
+> **A** = agente delegado vía spec (**Antigravity o Aider+Vertex AI**, indistinto —
+> mismo criterio: espec-able y verificable se delega; juicio doctrinal/auth no).
 
-## Criterio de delegación a Antigravity
+## Tesis comercial (del diálogo 2026-06-12)
 
-**Se delega** lo espec-able y verificable mecánicamente: OCR, runners de backtest,
-embeddings, fixes con tests claros. **No se delega**: juicio doctrinal (skill,
-secta, correcciones de corpus), arquitectura/auth, prompts de Lilly, decisiones
-de producto.
+- El MCP convierte a Abu Oracle de **destino en infraestructura**: el motor vive
+  donde la pregunta ocurre. La web no muere: **MCP distribuye, web convierte y cobra**.
+- **El patrón de monetización ya existe**: endpoints gratis (cielo, mundana) +
+  endpoints con llave (natal, biografía, HF). `Paddle → emisión de llave` =
+  suscripción por capacidad. Tiers ya cargados: $5/mes · $45/año · $100 lifetime
+  ×100 Genesis (venderlo como pertenencia, no descuento). Falta: tier **B2B/API**
+  ($50-200/mes) como "contactame".
+- **Dos audiencias, orden inverso al intuitivo**: (1) builders AI — atacable YA
+  sin audiencia previa (Show HN, r/ClaudeAI, r/mcp, LinkedIn, directorios MCP:
+  registry oficial, Smithery, PulseMCP, mcp.so, Glama); (2) consumidores
+  astrología — se construye con meses de pipeline multiplataforma.
+- **Safe Wallet = carril value-for-value paralelo** (publicar dirección: costo
+  cero, hoy). El ingreso principal es Paddle. Cripto-rieles nuevos: NO hasta
+  que el carril 1 facture.
+- **HF v1 consistente = corazón del tier pago** (relocalización es la killer
+  feature). Antiscios y aspectos nuevos = v2, cuando un suscriptor los pida.
+- Timing propio del sistema: julio = Mercurio Rx (revisión, P0s, preparación);
+  agosto = Mercurio directo + firdaria Sol/Marte (30-jul) → **lanzamiento**.
 
-Flujo: F redacta spec en `ai-oracle/.claude/specs/active/SPEC-*.md` → Antigravity
-ejecuta → review acá (F) → merge → spec a `specs/done/`.
+## KPIs (empezar a medir desde Fase 1)
 
-**Specs a redactar primero (12-jun):**
-| Spec | Contenido | Verificación |
-|---|---|---|
-| `SPEC-OCR-01` | OCR (tesseract/PyMuPDF) de los 10 PDFs sin capa de texto en `astro-texts/` — prioridad 1: `Lilly_William-Christian_astrology.pdf` (444 págs) | texto extraído >200 chars/pág en muestreo; reindex produce chunks CA |
-| `SPEC-BV-ALIAS-01` | BUG-10: alias opaco `NTV-{hash[:4]}` en run_blind_validation.py + limpieza de campos identificables | stdout sin subject_real ni ciudad; test incluido |
-| `SPEC-HF-BACKTEST-01` | Runner de backtest HF v7 contra 527 eventos held-out (cuando D2 defina la spec del algoritmo) | métricas reproducibles, seed fija, reporte JSON |
+| Métrica | Fuente | Baseline 12-jun | Meta 31-ago |
+|---|---|---|---|
+| Directorios MCP listados | manual | 0 | 5 |
+| Instalaciones/usuarios MCP | logs engine (por key) | 1 (Guillermo) | 50 |
+| Llaves emitidas (free→paid) | Firestore | 0 | 100 free · 10 paid |
+| MRR | Paddle | $0 | primer MRR > $0 |
+| Genesis vendidos | Paddle/Safe | 0 | 5 |
+| Seguidores pipeline | Bluesky+X+IG | 13 | 300 |
+| Donaciones Safe | on-chain | 0 | medir (sin meta) |
 
 ## Gantt
 
 ```mermaid
 gantt
   dateFormat YYYY-MM-DD
-  title EuYin / Abu Oracle — jun-jul 2026
+  title Abu Oracle — monetización · jun-ago 2026
   axisFormat %d-%b
 
-  section A · Consolidación
-  Deploy service key (G)              :a1, 2026-06-11, 1d
-  Housekeeping Desktop+skill+GitHub (G):a2, 2026-06-11, 1d
-  Verificación prod suite (F)         :a3, after a1, 1d
-  Auditoría secta en fixtures (F)     :a4, 2026-06-12, 1d
-  Doctrina faltante orbes+H3/H8/H11 (G+F):a5, 2026-06-12, 2d
+  section F0 · Cierres (12-17 jun)
+  Resubir skill v3 + confirmar firdaria (G)      :f01, 2026-06-12, 1d
+  Publicar dirección Safe en sitio/posts (G)     :f02, 2026-06-12, 1d
+  Sanitizar repo + push GitHub euyin (F+G)       :f03, 2026-06-13, 2d
+  Specs delegables iniciales (F)                 :f04, 2026-06-13, 2d
+  OCR biblioteca — CA prioridad (A)              :f05, 2026-06-15, 4d
 
-  section B · Biblioteca
-  Redactar 3 specs Antigravity (F)    :b1, 2026-06-12, 1d
-  OCR 10 PDFs — CA prioridad (A)      :b2, after b1, 4d
-  Reindex + QA corpus (F)             :b3, after b2, 1d
-  Separar fixtures personales (F)     :b4, 2026-06-17, 1d
-  Embeddings upgrade (A, stretch)     :b5, 2026-06-22, 3d
+  section F1 · Infra monetización (16-30 jun)
+  Diseño llaves por tier + scopes (F+G)          :m1, 2026-06-16, 2d
+  Paddle webhook → emisión de llave (F+A)        :m2, after m1, 4d
+  Metering por llave + /v1/me/usage real (A)     :m3, 2026-06-22, 3d
+  Tier B2B "contactame" en sitio (G)             :m4, 2026-06-25, 1d
+  Export NotebookLM HF (G)                       :h1, 2026-06-13, 1d
+  Spec HF v7 + umbrales prereg (F+G)             :h2, 2026-06-17, 3d
+  Backtest HF 527 eventos (A+F)                  :h3, 2026-06-22, 9d
+  Compuerta HF: pasa/no pasa (G)                 :h4, 2026-07-06, 2d
 
-  section C · Runtime diario
-  Diseño loop + juicio publicación (G+F):c1, 2026-06-15, 1d
-  Implementación Agent SDK (F)        :c2, after c1, 3d
-  Dry-run 3 días (F+G)                :c3, after c2, 3d
-  Deploy Job + scheduler (G)          :c4, after c3, 1d
-  Posts en vivo + monitoreo           :c5, after c4, 14d
+  section F2 · Rx julio — preparar (1-31 jul)
+  P0s engine — bugs vía specs (A)                :p1, 2026-07-01, 6d
+  Pipeline Fase 1 multiplataforma X+IG (F+A)     :p2, 2026-07-01, 12d
+  Runtime EuYin con juicio + aprobación móvil (F):p3, 2026-07-08, 8d
+  MCP remoto auth por llave — Cloud Run (F+G)    :p4, 2026-07-13, 7d
+  Listarse en 5 directorios MCP (G+F)            :p5, 2026-07-21, 3d
+  Borradores Show HN / r-ClaudeAI / LinkedIn (F) :p6, 2026-07-21, 3d
+  Dry-run pipeline completo (F+G)                :p7, 2026-07-24, 5d
 
-  section D · HF compuerta
-  Export NotebookLM (G)               :d1, 2026-06-13, 1d
-  Spec HF v7 + umbrales prereg (F+G)  :d2, 2026-06-16, 3d
-  Backtest 527 eventos (A+F)          :d3, 2026-06-22, 10d
-  Decisión compuerta pasa/no-pasa (G) :d4, 2026-07-06, 3d
-
-  section E · Conector público
-  MCP HTTP + deploy Cloud Run (F+G)   :e1, 2026-06-24, 3d
-  Auth + rate-limit + beta privada    :e2, 2026-06-29, 5d
-  Beta pública / listing (G)          :e3, 2026-07-06, 5d
-
-  section F · Investigación
-  Fix BUG-10 alias opaco (A)          :f1, 2026-06-13, 2d
-  Blind Validation sesiones 2-10 (G+F):f2, 2026-06-17, 20d
-  Motor comparado Jyotish (F+G)       :f3, 2026-07-06, 10d
+  section F3 · LANZAMIENTO (agosto)
+  Show HN + r-ClaudeAI + r-mcp + LinkedIn (G)    :l1, 2026-08-03, 3d
+  Genesis Access a la venta (G)                  :l2, 2026-08-03, 2d
+  Pipeline audiencia 2 en background             :l3, 2026-08-03, 12d
+  Medición embudo + iteración (F+G)              :l4, 2026-08-06, 10d
 ```
 
 ## Dependencias duras
 
-- `A1 → A3 → linea_biografica en prod` (sin deploy de la key, la tool solo anda local)
-- `B1 → B2 → B3` (el OCR alimenta el reindex)
-- `B4 → E1` (**privacidad**: no exponer el MCP público con fixtures personales en el corpus)
-- `D1 → D2 → D3 → D4` (sin export de NotebookLM no hay spec HF v7)
-- `F1 → F2` (BUG-10 bloquea Blind Validation)
-- `C4` y `E1` requieren deploys de G
+- `m1 → m2 → m3` y `m2 → p4` (el MCP remoto autenticado usa la MISMA infra de
+  llaves — el conector público autenticado ES el producto B2B)
+- `f03 (repo público sanitizado, sin fixtures personales ni secretos) → p5 (directorios)`
+- `h1 (export NotebookLM — solo G puede) → h2 → h3 → h4`. Si la compuerta NO pasa,
+  el lanzamiento sale igual: el tier pago lidera con natal+biografía y el HF queda
+  "en validación" (regla content_generator: capacidad, no números)
+- `p2/p3 → p7 → l3` · `p6 → l1` · julio Rx = preparar, NO lanzar; agosto = lanzar
 
-## Hitos
+## Postergado explícito (disciplina de foco)
 
-| Fecha | Hito |
-|---|---|
-| 12-jun | linea_biografica viva en producción |
-| 17-jun | Christian Astrology completa en la biblioteca |
-| 22-jun | EuYin publica sola (runtime en producción) |
-| ~3-jul | Backtest HF v7 terminado → datos para la compuerta |
-| ~10-jul | Conector público en beta |
-| ~17-jul | Primer experimento Motor Comparado (Lilly vs Jyotish) |
+- Antiscios + aspectos nuevos del HF → cuando un suscriptor pagante los pida
+- Rieles cripto/ERC-8004 → cuando el carril Paddle facture
+- Motor Doctrinal Comparado (Jyotish) → post-lanzamiento (sigue siendo el norte académico)
+- Blind Validation / arXiv → continúa de fondo, sin fecha en este ciclo
+- Embeddings biblioteca → cuando la recuperación BM25 quede corta en uso pago
 
-## Backlog sin fecha (se prioriza al cerrar lo anterior)
+## Specs para el delegado (Antigravity / Aider+Vertex)
 
-- BUG-04 (LINK_LOST /api/chat) · BUG-09 (errores form genéricos) — delegables vía spec
-- Eval loop formal de la skill (iteration-2 con feedback de uso real) + description optimization
-- Tool `puntaje_dominio` (HF por ciudad vía /api/astro/domain-score)
-- Astrología horaria (prioridad 5 del roadmap de Lilly)
-- OIDC para reemplazar service key estática (madurez de seguridad)
-- arXiv Blind Validation (requiere F2 ≥ 10 sesiones)
+| Spec | Fase | Contenido | Verificación |
+|---|---|---|---|
+| `SPEC-OCR-01` | F0 | OCR 10 PDFs sin texto (prioridad: Christian Astrology) | >200 chars/pág muestreados; reindex con chunks CA |
+| `SPEC-KEYS-01` | F1 | Webhook Paddle → crear API key en Firestore + email Resend (sobre el patrón crypto-payment existente) | test e2e sandbox Paddle; key emitida funciona contra endpoint protegido |
+| `SPEC-METER-01` | F1 | Metering por key + `/api/v1/me/usage` real (hoy devuelve mock) | usage refleja llamadas reales por key |
+| `SPEC-P0S-01` | F2 | BUG-04 (LINK_LOST), BUG-09 (errores form), BUG-10 (alias BV) | repro + test por bug |
+| `SPEC-HF-BACKTEST-01` | F1 | Runner backtest HF v7 vs 527 eventos held-out (espera spec h2) | métricas reproducibles, seed fija, JSON |
+| `SPEC-PIPE-01` | F2 | Publishers X + Instagram sobre kernel existente + cola de aprobación | dry-run multiplataforma con drafts |
