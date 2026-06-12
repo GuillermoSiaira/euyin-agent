@@ -17,6 +17,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import os
+
 from mcp.server.fastmcp import FastMCP
 
 import abu_client
@@ -24,7 +26,10 @@ import biblioteca
 import config
 import doctrine
 
-mcp = FastMCP("abu-oracle")
+# Puerto leído aquí (nivel de módulo) para que el argumento explícito
+# al constructor tome el valor de FASTMCP_PORT antes de que lo fije en 8000.
+_port = int(os.environ.get("FASTMCP_PORT", "8001"))
+mcp = FastMCP("abu-oracle", port=_port)
 
 
 def _configuraciones_desde_aspectos(aspectos: list[dict]) -> list[dict]:
@@ -328,4 +333,9 @@ def consultar_biblioteca(
 
 
 if __name__ == "__main__":
-    mcp.run()
+    import os
+    # Transport se controla con env var MCP_TRANSPORT=sse|stdio (default: stdio).
+    # Puerto se controla con FASTMCP_PORT (default FastMCP: 8000).
+    # Ambas deben estar seteadas ANTES de iniciar el proceso (no dentro del script).
+    transport = os.environ.get("MCP_TRANSPORT", "stdio")
+    mcp.run(transport=transport)  # type: ignore[arg-type]
