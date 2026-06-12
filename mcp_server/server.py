@@ -282,16 +282,20 @@ def linea_biografica(
     # incluirlos a 12 meses inundaría el contexto. (Gap detectado en uso real:
     # el filtro slow-only ocultó un Marte□Saturno a 2 semanas.)
     limite_rapidos = hoy + timedelta(days=45)
-    proximos = sorted(
-        (
-            _compacto(t)
-            for t in ventana
-            if not t.get("is_active")
-            and (f := _fecha(t)) is not None
-            and hoy <= f <= (limite if t.get("speed_class", "slow") == "slow" else limite_rapidos)
-        ),
-        key=lambda c: c["exacto"] or "",
-    )[:40]
+    candidatos = [
+        _compacto(t)
+        for t in ventana
+        if not t.get("is_active")
+        and (f := _fecha(t)) is not None
+        and hoy <= f <= (limite if t.get("speed_class", "slow") == "slow" else limite_rapidos)
+    ]
+    # Cupos separados: los rápidos (numerosos) no deben expulsar a los lentos
+    # del final de la ventana (un Saturno□Sol a 9 meses pesa más que el enésimo
+    # sextil de Venus a 3 semanas).
+    candidatos.sort(key=lambda c: c["exacto"] or "")
+    lentos = [c for c in candidatos if c["clase"] == "slow"][:25]
+    rapidos = [c for c in candidatos if c["clase"] != "slow"][:15]
+    proximos = sorted(lentos + rapidos, key=lambda c: c["exacto"] or "")
 
     return {
         "fecha_nacimiento": fecha_iso,
