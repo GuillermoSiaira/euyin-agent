@@ -277,14 +277,18 @@ def linea_biografica(
 
     ventana = bio.get("transits_window", [])
     activos = [_compacto(t) for t in ventana if t.get("is_active")]
+    # Lentos: toda la ventana pedida. Rápidos (Sol/Mercurio/Venus/Marte): solo
+    # los próximos 45 días — relevantes para pronóstico de quincena/mes, pero
+    # incluirlos a 12 meses inundaría el contexto. (Gap detectado en uso real:
+    # el filtro slow-only ocultó un Marte□Saturno a 2 semanas.)
+    limite_rapidos = hoy + timedelta(days=45)
     proximos = sorted(
         (
             _compacto(t)
             for t in ventana
             if not t.get("is_active")
-            and t.get("speed_class", "slow") == "slow"
             and (f := _fecha(t)) is not None
-            and hoy <= f <= limite
+            and hoy <= f <= (limite if t.get("speed_class", "slow") == "slow" else limite_rapidos)
         ),
         key=lambda c: c["exacto"] or "",
     )[:40]
