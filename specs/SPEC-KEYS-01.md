@@ -11,7 +11,7 @@ crea usuario Firebase + doc Firestore `users/{uid}` con `api_key: uuidv4()`, `pl
 `quota_used/quota_limit` y manda welcome email (Resend). **NO construir webhook nuevo,
 NO crear colección `api_keys/` paralela.** El alcance real es soldar 3 cabos:
 
-1. **Engine acepta la key** *(DELEGADO con receta exacta — Fable solo revisa el diff)*:
+1. **Engine acepta la key** *(✅ HECHO 2026-06-13 — Aider, verificado por Fable; en working tree sin commitear)*:
    en `abu_engine/core/auth.py`, dentro de `verify_token_or_service_key`, agregar
    parámetro `x_abu_api_key: str | None = Header(default=None, alias="X-Abu-Api-Key")`
    y, DESPUÉS del check de service key y ANTES del fallback JWT, este bloque:
@@ -35,17 +35,28 @@ NO crear colección `api_keys/` paralela.** El alcance real es soldar 3 cabos:
        return user_data
    ```
    Reglas duras: NO tocar el flujo JWT ni el de service key; NO loguear la key
-   (ni entera ni prefijo); si `AUTH_ENABLED=false` + dev, el mock existente ya
-   cubre todo (no agregar nada ahí).
+   (ni entera ni prefijo).
+   **Corrección 2026-06-13 (implementado + verificado por Fable):** la afirmación
+   previa "el mock dev existente ya cubre todo" era FALSA. `verify_token_or_service_key`
+   hace `if credentials is None: raise 401` ANTES de caer a `verify_token`, así que
+   el mock dev de `verify_token` NUNCA se alcanza desde esta función → en dev local
+   los 15 endpoints daban 401. SÍ había que agregar un bloque dev-mock al inicio
+   (mismo patrón `if not AUTH_ENABLED and _is_dev:` de las líneas 81/233 de auth.py).
+   Hecho — el diff queda en working tree de ai-oracle (sin commitear, `--no-auto-commits`).
    Test (mismo patrón que el de service key): crear doc de prueba en Firestore
    local/emulador o mock → con key válida 200, inválida 401, sin pago 403,
    quota excedida 429.
-2. **La key llega al cliente** *(delegable)*: agregarla al welcome email de
-   `provision-user.ts` (bloque "Tu API key + config MCP") y mostrarla en la app
-   (sección cuenta). Hoy se genera y muere en Firestore.
-3. **Formato de key** *(delegable, junto con 2)*: en `provision-user.ts` cambiar
-   `uuidv4()` → `"ak_" + crypto.randomBytes(24).toString("hex")`. Sin migración:
-   hay 0 keys emitidas a usuarios.
+2. **La key llega al cliente** *(delegable — estructura verificada 2026-06-13)*:
+   en `next_app/lib/provision-user.ts`, el `api_key` se genera (línea 57) y muere
+   en Firestore. Hay que pasarlo por la cadena `provisionUser` → `sendWelcomeEmail`
+   (línea 85, agregar param) → `buildWelcomeHtml` (línea 104, agregar param) y
+   agregar en el HTML un bloque "Tu API key + config MCP" con la key y el snippet
+   de config del conector. **OJO**: el `password = uuidv4()` de la línea 43 NO se
+   toca — es otra cosa. La parte "mostrarla en la app (sección cuenta)" queda como
+   sub-tarea de UI aparte (requiere ver si existe página de cuenta).
+3. **Formato de key** *(delegable, junto con 2)*: en `provision-user.ts` línea 57,
+   `api_key: uuidv4()` → `api_key: "ak_" + crypto.randomBytes(24).toString("hex")`
+   (agregar `import { randomBytes } from "crypto"`). Sin migración: 0 keys emitidas.
 
 **Respuestas a las preguntas abiertas:**
 1. **Scopes**: enum de tier con permisos implícitos — NADA de listas planas. v1: el
