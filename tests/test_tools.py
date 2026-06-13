@@ -67,7 +67,8 @@ def test_linea_biografica() -> None:
     if not config.ABU_SERVICE_KEY:
         print("        (skip: ABU_SERVICE_KEY no configurada)")
         return
-    out = server.linea_biografica("1978-07-06T00:15:00Z", -37.85, -58.26, meses_adelante=6)
+    # William Lilly's birth: 1602-05-11, Diseworth, UK (52.82°N, 1.35°W)
+    out = server.linea_biografica("1602-05-11T14:00:00Z", 52.82, -1.35, meses_adelante=6)
     assert out["profeccion"]["activa"], "sin profección activa"
     assert out["firdaria"]["activa"], "sin firdaria activa"
     assert isinstance(out["transitos"]["activos"], list), "tránsitos activos no es lista"

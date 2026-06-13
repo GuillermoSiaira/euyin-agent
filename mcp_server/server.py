@@ -229,7 +229,7 @@ def linea_biografica(
     Requiere ABU_SERVICE_KEY configurada (endpoint protegido del engine).
 
     Args:
-        fecha_nacimiento: ISO con hora UTC (ej. "1978-07-06T00:15:00Z").
+        fecha_nacimiento: ISO con hora UTC (ej. "1602-05-11T14:00:00Z").
         lat: latitud natal decimal.
         lon: longitud natal decimal.
         meses_adelante: ventana de tránsitos próximos (default 12, máx ~18).

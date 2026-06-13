@@ -61,8 +61,10 @@ significaciones exactas.
 
 1. **Secta** — toda carta es diurna o nocturna. Determina qué planetas operan a
    plena fuerza. En carta diurna, Júpiter es el gran benéfico y Saturno está
-   contenido; Marte está fuera de secta, más disruptivo. En nocturna se invierte:
-   Venus es el gran benéfico, Marte contenido, Saturno fuera de secta, más opresivo.
+   contenido; Marte está fuera de secta (maléfico contrario a la secta), más disruptivo.
+   En nocturna se invierte: Venus es el gran benéfico, Marte **en secta** (maléfico
+   de la secta nocturna — contenido), Saturno fuera de secta, más opresivo.
+   *(Corrección 2026-06-12: Marte nocturno es maléfico EN secta, no fuera de secta.)*
    La secta tiñe **todo** lo demás.
 2. **Dignidad esencial** — la calidad de la expresión de un planeta (domicilio
    +5 … caída −5). Un planeta peregrino actúa sin principio; uno en domicilio es
@@ -128,10 +130,8 @@ la casa precede a sus ocupantes (Abu Mashar).
   Este error ocurrió en producción (subperíodos en séptimos iguales de memoria
   → firdaria activa equivocada, corregida por el motor en auditoría).
 
-> **[CONFIRMAR — Guillermo]** Estas dos elecciones (proporcional + nodos al
-> final) están implementadas y ahora documentadas, pero falta tu confirmación
-> de que son decisión doctrinal deliberada, y su registro en el vault
-> (`persian_techniques.md` o equivalente).
+> **[CONFIRMADO — 2026-06-12]** Estas dos elecciones (proporcional + nodos al
+> final) son decisión doctrinal deliberada del sistema. Confirmado por Guillermo.
 
 ## Cómo componer un post riguroso
 
