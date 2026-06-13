@@ -78,6 +78,12 @@ Multiplicador por rol de secta:
 | Maléfico de secta (contenido) | Saturno / Marte | 0.85 |
 | Maléfico contrario (disruptivo) | Marte / Saturno | 1.15 |
 | Sin doctrina de secta | Mercurio, Urano, Neptuno, Plutón | 1.00 |
+| Luminaria **fuera** de secta | Sol nocturno / Luna diurna | 1.00 |
+
+> **Decisión 2026-06-13 (implementado h4):** la tabla no cubría la luminaria
+> fuera de secta (Sol en carta nocturna, Luna en diurna). Se fija en **1.00
+> (neutro)** — no se la penaliza ni premia. Default conservador; registrado para
+> que el parámetro no quede sin documentar.
 
 Doctrina: la secta determina qué planetas operan a plena fuerza. El maléfico
 contrario a la secta es el más dañino → su participación se **amplifica** (y como
