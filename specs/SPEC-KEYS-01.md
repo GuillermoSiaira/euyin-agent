@@ -11,10 +11,35 @@ crea usuario Firebase + doc Firestore `users/{uid}` con `api_key: uuidv4()`, `pl
 `quota_used/quota_limit` y manda welcome email (Resend). **NO construir webhook nuevo,
 NO crear colección `api_keys/` paralela.** El alcance real es soldar 3 cabos:
 
-1. **Engine acepta la key** *(lo implementa Fable — auth no se delega)*: branch
-   `X-Abu-Api-Key` en `verify_token_or_service_key` (`abu_engine/core/auth.py`) →
-   query `users` where `api_key == header` → mismo flujo de `payment_verified` +
-   quota que ya existe en `verify_token`.
+1. **Engine acepta la key** *(DELEGADO con receta exacta — Fable solo revisa el diff)*:
+   en `abu_engine/core/auth.py`, dentro de `verify_token_or_service_key`, agregar
+   parámetro `x_abu_api_key: str | None = Header(default=None, alias="X-Abu-Api-Key")`
+   y, DESPUÉS del check de service key y ANTES del fallback JWT, este bloque:
+   ```python
+   if x_abu_api_key:
+       db = _get_firestore_client()
+       docs = list(db.collection("users").where("api_key", "==", x_abu_api_key).limit(1).stream())
+       if not docs:
+           raise HTTPException(status_code=401, detail="API key inválida")
+       user_data = docs[0].to_dict()
+       if not user_data.get("payment_verified", False):
+           raise HTTPException(status_code=403, detail="Pago no verificado")
+       quota_used = user_data.get("quota_used", 0)
+       quota_limit = user_data.get("quota_limit", 100)
+       if quota_used >= quota_limit:
+           raise HTTPException(status_code=429, detail=f"Quota excedida ({quota_used}/{quota_limit})")
+       try:
+           docs[0].reference.update({"quota_used": firestore.Increment(1)})
+       except Exception as e:
+           logger.warning(f"No se pudo incrementar quota api_key: {e}")
+       return user_data
+   ```
+   Reglas duras: NO tocar el flujo JWT ni el de service key; NO loguear la key
+   (ni entera ni prefijo); si `AUTH_ENABLED=false` + dev, el mock existente ya
+   cubre todo (no agregar nada ahí).
+   Test (mismo patrón que el de service key): crear doc de prueba en Firestore
+   local/emulador o mock → con key válida 200, inválida 401, sin pago 403,
+   quota excedida 429.
 2. **La key llega al cliente** *(delegable)*: agregarla al welcome email de
    `provision-user.ts` (bloque "Tu API key + config MCP") y mostrarla en la app
    (sección cuenta). Hoy se genera y muere en Firestore.
