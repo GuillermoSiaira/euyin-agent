@@ -61,10 +61,14 @@ gantt
   Paddle webhook → emisión de llave (F+A)        :m2, after m1, 4d
   Metering por llave + /v1/me/usage real (A)     :m3, 2026-06-22, 3d
   Tier B2B "contactame" en sitio (G)             :m4, 2026-06-25, 1d
-  Export NotebookLM HF (G)                       :h1, 2026-06-13, 1d
-  Spec HF v7 + umbrales prereg (F+G)             :h2, 2026-06-17, 3d
-  Backtest HF 527 eventos (A+F)                  :h3, 2026-06-22, 9d
-  Compuerta HF: pasa/no pasa (G)                 :h4, 2026-07-06, 2d
+  Export NotebookLM HF — diseño v7 (G)           :h1, 2026-06-13, 1d
+  Spec HF v7 completitud + prereg (F+G)          :h2, 2026-06-12, 1d
+  Corpus relocalización celebridades (A+G)       :h3, 2026-06-14, 7d
+  Impl. N1-N2: secta + dignidad en campo (A)     :h4, 2026-06-16, 6d
+  Impl. N3a-N3b: recepción + antiscios (A)       :h5, 2026-06-22, 5d
+  Impl. N3c-N5: parans + ángulos + tránsito (A)  :h6, 2026-06-27, 8d
+  Backtest ablación 2 corpus (A+F)               :h7, 2026-07-05, 6d
+  Compuerta HF por nivel: pasa/no pasa (G)       :h8, 2026-07-11, 2d
 
   section F2 · Rx julio — preparar (1-31 jul)
   P0s engine — bugs vía specs (A)                :p1, 2026-07-01, 6d
@@ -87,9 +91,11 @@ gantt
 - `m1 → m2 → m3` y `m2 → p4` (el MCP remoto autenticado usa la MISMA infra de
   llaves — el conector público autenticado ES el producto B2B)
 - `f03 (repo público sanitizado, sin fixtures personales ni secretos) → p5 (directorios)`
-- `h1 (export NotebookLM — solo G puede) → h2 → h3 → h4`. Si la compuerta NO pasa,
-  el lanzamiento sale igual: el tier pago lidera con natal+biografía y el HF queda
-  "en validación" (regla content_generator: capacidad, no números)
+- `h1 (export NotebookLM — solo G) → h2`. Impl. `h4 → h5 → h6` (acumulativo
+  top-down por nivel doctrinal). Corpus `h3` corre en paralelo y bloquea el test
+  espacial de `h7`. `h7 → h8`. Si la compuerta NO pasa por nivel, ese nivel no
+  entra y el HF sale "en validación" (regla content_generator: capacidad, no
+  números). **El HF no se ofrece hasta cerrar completitud (h2-h6) Y confianza (h8).**
 - `p2/p3 → p7 → l3` · `p6 → l1` · julio Rx = preparar, NO lanzar; agosto = lanzar
 
 ## Postergado explícito (disciplina de foco)
@@ -108,5 +114,7 @@ gantt
 | `SPEC-KEYS-01` | F1 | Webhook Paddle → crear API key en Firestore + email Resend (sobre el patrón crypto-payment existente) | test e2e sandbox Paddle; key emitida funciona contra endpoint protegido |
 | `SPEC-METER-01` | F1 | Metering por key + `/api/v1/me/usage` real (hoy devuelve mock) | usage refleja llamadas reales por key |
 | `SPEC-P0S-01` | F2 | BUG-04 (LINK_LOST), BUG-09 (errores form), BUG-10 (alias BV) | repro + test por bug |
-| `SPEC-HF-BACKTEST-01` | F1 | Runner backtest HF v7 vs 527 eventos held-out (espera spec h2) | métricas reproducibles, seed fija, JSON |
+| `SPEC-HF-V7-01` | F1·h2 | HF v7 completitud doctrinal (5 niveles jerarquía) + umbrales preregistrados | parámetros congelados, ablación definida |
+| `SPEC-HF-CORPUS-01` | F1·h3 | Corpus relocalización celebridades (residencias fechadas + eventos ubicados) | ≥80 eventos con lat/lon, trazables, verif. G |
+| `SPEC-HF-BACKTEST-01` | F1·h7 | Runner backtest HF v7 — ablación por nivel, 2 corpus (temporal + espacial) | métricas reproducibles, seed fija, JSON |
 | `SPEC-PIPE-01` | F2 | Publishers X + Instagram sobre kernel existente + cola de aprobación | dry-run multiplataforma con drafts |

@@ -1,43 +1,53 @@
 # SPEC-HF-BACKTEST-01 — Runner Backtest Harmony Field v7
 
-> **Estado**: ⚠️ CORREGIDO — dos errores metodológicos graves (auditoría Fable 2026-06-12)
+> **Estado**: ⚠️ ACTUALIZADO 2026-06-12 — ahora con corpus de relocalización +
+> ablación por nivel (auditoría Fable). Reemplaza la versión "solo métricas temporales".
 
 ## ⚖️ AUDITORÍA FABLE — leer antes que nada
 
-**Error 1 — "held-out por diseño" es FALSO.** Los 527 eventos
-(`ai-oracle/data/biographical_events/*.json` + `biographical_events_v2/`) **SÍ se
-usaron para calibrar**: el grid search de pesos del HF (9.261 combinaciones,
-documentado en CLAUDE.md) corrió sobre este corpus, y las correlaciones de Fase 4/6
-también. Backtestear v7 sobre los 527 completos es evaluación in-sample — invalidaría
-la compuerta y cualquier claim público. **Protocolo corregido (obligatorio):**
-- Split train/test estratificado por dominio, seed fija, congelado ANTES de calibrar
-  v7 (el split se commitea como JSON con hash). v7 se calibra SOLO con train; la
-  compuerta (h4) se evalúa SOLO con test.
-- Limitación a documentar en el output: el test split influyó en versiones ancestras
-  (v3/v6); el gold standard futuro son eventos recolectados post-v7. La compuerta
-  igual es informativa: mide si v7 generaliza mejor que el azar en datos que no
-  tocó directamente.
+**Cambio mayor:** ahora existe `SPEC-HF-CORPUS-01` — corpus de relocalización
+(celebridades con residencias fechadas + eventos ubicados). Eso **habilita el test
+espacial** que antes era imposible. El runner evalúa DOS corpus complementarios:
 
-**Error 2 — "ubicación del evento" casi no existe en el corpus.** Solo GS_004
-(26 eventos) tiene lat/lon por evento; el resto tiene carta natal + fecha + valencia
-+ dominio. El diseño "percentil del HF en la ubicación del evento" es imposible para
-~500 eventos. **Métricas corregidas** (las que el corpus soporta, mismas familias que
-Fase 4/6): correlación HF↔valencia por dominio, Cohen's d, Mann-Whitney/rank-biserial
-— donde el HF se evalúa en la dimensión temporal/dominio del evento. El análisis
-espacial puro queda como sub-experimento sobre GS_004 únicamente (n=26, reportado
-aparte y con esa salvedad).
+1. **Corpus de relocalización** (`SPEC-HF-CORPUS-01`, ≥80 eventos con lat/lon+fecha):
+   habilita la métrica espacial real — ¿el HF del dominio en la ubicación del evento
+   predice su valencia? Hit-rate vs baseline (ubicaciones shuffleadas, seed fija).
+2. **Corpus temporal** (527 eventos `biographical_events/*.json` + v2): métricas
+   HF↔valencia por dominio, Cohen's d, rank-biserial — para operadores que no
+   mueven el mapa.
 
-**Respuestas a las preguntas abiertas:**
-1. Sí, h2 es bloqueante y lo escribo yo con G — este runner no arranca antes.
-2. **Import directo** — el runner vive en ai-oracle junto al engine. Ojo:
-   `harmony_field.py` no existe; los módulos reales son `abu_engine/harmony/field_v3.py`,
-   `resonance.py`, `houses.py`, `angularity.py` (v7 definirá el suyo en h2).
-3. **El corpus ya existe como JSON** en las rutas de arriba — no hay que parsear
-   nada de NotebookLM (el export h1 es para el DISEÑO de v7, no para el corpus).
-4. **Plotting fuera** — concuerdo. JSON + script post-hoc.
+**Held-out — disciplina obligatoria.** Los 527 ya calibraron v3/v6 (grid search,
+9.261 combos). Pero v7 **no se calibra** (parámetros preregistrados en
+`SPEC-HF-V7-01`) → el backtest es test de hipótesis, no ajuste. Aun así:
+- Split train/test estratificado por dominio, seed fija, congelado y commiteado
+  como JSON con hash ANTES de correr. El test mide generalización.
+- El corpus de relocalización es **nuevo** (post-calibración) → held-out genuino
+  para la dimensión espacial. Esa es la métrica que vale para la compuerta.
+
+**Ablación por nivel (de `SPEC-HF-V7-01` §5) — OBLIGATORIA.** No correr solo
+"v6 vs v7". Evaluar cada brazo acumulativo top-down y reportar por separado:
+```
+v6_base · +N1(secta) · +N2(dignidad) · +N3a(recepción) · +N3b(antiscios)
+        · +N3c(parans) · +N3d(aspectos-ángulo) · +N5(tránsito→ángulo) = v7
+```
+**Qué corpus mide qué operador:**
+- Secta, dignidad, recepción, antiscios → constantes por carta → **corpus temporal**.
+- Parans, aspectos-a-ángulo, tránsito→ángulo → varían con lat/lon → **corpus de
+  relocalización** (la métrica espacial es la única que los puede ver).
+
+La compuerta h8 decide **por nivel** (puede adoptar solo los que mejoraron).
+
+**Preguntas abiertas:**
+1. `SPEC-HF-V7-01` (h2) es bloqueante — define parámetros y ablación. Hecho.
+2. **Import directo** — runner en ai-oracle. Módulos: `field_v3.py`, `resonance.py`,
+   `houses.py`, `angularity.py` + nuevos de v7 (`antiscia.py`, etc.). NO existe
+   `harmony_field.py`.
+3. **Dos corpus** JSON: temporal en `data/biographical_events/`, espacial en
+   `data/hf_relocation_corpus/` (lo genera `SPEC-HF-CORPUS-01`).
+4. **Plotting fuera** — JSON + script post-hoc.
 
 Lo demás del borrador (reproducibilidad por seed/hash/version pin, output JSON,
-runner-no-decide) queda APROBADO — está bien pensado.
+runner-no-decide) queda APROBADO.
 
 ---
 > **Estado original**: BORRADOR (Antigravity)  
