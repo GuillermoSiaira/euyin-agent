@@ -1,4 +1,30 @@
+# Python
 .venv/
 __pycache__/
 *.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Environment / secrets
 .env
+
+# Logs
+*.log
+mcp_server.log
+
+# OS
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Skill workspace outputs (eval runs — large, not source)
+skills/lilly-interpretacion-workspace/
