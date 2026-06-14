@@ -166,9 +166,14 @@ astrocartografía, Jim Lewis). Latitude-dependiente, no longitude.
 
 No solo planetas SOBRE el ángulo, sino planetas natales que aspectan el ASC/MC
 **local** (trígono/sextil/cuadratura/oposición al ángulo relocalizado).
-- **Orbe**: ±3° al ángulo.
-- **Pesos**: mismos `ASPECT_WEIGHTS` de grupo (armónico suma, tenso resta),
-  modulados por `W(p)`.
+- **Orbe**: σ=3° gaussiano (consistente con el campo, sin corte duro).
+- **Pesos (explícitos, NO `GROUP_WEIGHTS`)**: armónico (sextil/trígono) **+1.0**
+  (suma), tenso (cuadratura/oposición) **−1.0** (resta), modulados por `W(p)`.
+  *Decisión 2026-06-13 (h6a): NO se reusa `GROUP_WEIGHTS` (que tiene
+  w_harmony=w_tension=−1.0, calibrado para el agregado global donde ambos restan).
+  Acá la distinción armónico/tenso al ángulo ES el punto del operador; `W(p)`
+  modula fuerza, no valencia del aspecto.*
+- **Destino**: acumulador `hf_angles` (coef. β=0.6), no `hf_aspects`.
 - **Cómputo**: extensión de `angularity.py` (hoy solo conjunción al ángulo).
 
 ### Nivel 5 — Tránsito → ángulo relocalizado (el mapa vivo)
