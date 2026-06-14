@@ -341,6 +341,106 @@ def consultar_biblioteca(
 
 
 @mcp.tool()
+def carta_natal(fecha_nacimiento: str, lat: float, lon: float = 0.0) -> dict[str, Any]:
+    """
+    La carta natal doctrinal completa — lo que cielo_instante NO da: secta, lotes, firdaria, profección.
+
+    Devuelve el frame doctrinal completo de una carta natal, incluyendo la
+    secta (diurna/nocturna), las posiciones planetarias con dignidades, los
+    lotes arábigos principales con su señor, la firdaria y la profección anual.
+    Endpoint protegido: requiere ABU_SERVICE_KEY.
+
+    Args:
+        fecha_nacimiento: ISO de nacimiento (YYYY-MM-DD o con hora). Requerido.
+        lat: Latitud natal decimal. Requerido.
+        lon: Longitud natal decimal (default 0 = Greenwich).
+
+    Returns:
+        {fecha, ubicacion, secta, ascendente, medio_cielo, posiciones[...],
+         lotes[...], profeccion, firdaria, fuente} | {error}
+    """
+    fecha_iso = abu_client.normalize_date(fecha_nacimiento)
+    chart = abu_client.chart_extended(fecha_iso, lat, lon)
+
+    # La respuesta tiene DOS bloques: `chart` (planetas, asc/mc, location) y
+    # `extended` (lotes, fardars, profecciones, dignidades). El frame doctrinal
+    # vive en `extended` — verificado contra el engine vivo 2026-06-14.
+    data = chart.get("chart", {})
+    ext = chart.get("extended", {})
+    fardars = ext.get("fardars", {})  # dict: {fardars, current, is_diurnal}
+
+    posiciones = [
+        {
+            "planeta": p.get("name"),
+            "signo": p.get("sign"),
+            "grado": p.get("degree_in_sign", p.get("degree")),
+            "casa": p.get("house"),
+            "dignidad": p.get("dignity_traditional"),
+            "retrogrado": p.get("retrograde"),
+        }
+        for p in data.get("planets", [])
+    ]
+
+    lotes = [
+        {
+            "nombre": lote.get("name"),
+            "signo": lote.get("sign"),
+            "grado": lote.get("degree"),
+            "casa": lote.get("house"),
+            "senor": lote.get("lord"),
+        }
+        for lote in ext.get("lots", [])
+    ]
+
+    # Firdaria activa: extended.fardars.current. Profección: extended.profections (dict).
+    firdaria_activa = fardars.get("current")
+    profeccion_activa = ext.get("profections")
+
+    return {
+        "fecha": fecha_iso,
+        "ubicacion": data.get("location"),
+        "secta": "diurna" if fardars.get("is_diurnal") else "nocturna",
+        "ascendente": data.get("asc"),
+        "medio_cielo": data.get("mc"),
+        "posiciones": posiciones,
+        "lotes": lotes,
+        "profeccion": profeccion_activa,
+        "firdaria": firdaria_activa,
+        "fuente": "abu-engine /api/astro/chart/extended",
+    }
+
+
+@mcp.tool()
+def revolucion_solar(
+    fecha_nacimiento: str, lat: float, lon: float = 0.0, anio: int = 0
+) -> dict[str, Any]:
+    """
+    Carta del retorno solar (revolución solar) para un año — el pulso anual, distinto cada año.
+
+    Calcula la carta para el momento exacto en que el Sol vuelve a su posición
+    natal en un año determinado. Útil para pronósticos anuales.
+    Endpoint protegido: requiere ABU_SERVICE_KEY.
+
+    Args:
+        fecha_nacimiento: ISO de nacimiento (YYYY-MM-DD o con hora). Requerido.
+        lat: Latitud natal decimal. Requerido.
+        lon: Longitud natal decimal (default 0 = Greenwich).
+        anio: Año para el cual calcular el retorno (ej. 2024). Si es 0 o se
+              omite, usa el año del retorno solar más próximo.
+
+    Returns:
+        {datetime_sr, posiciones[], ascendente_sr, medio_cielo_sr,
+         configuraciones[], fuente} | {error}
+    """
+    fecha_iso = abu_client.normalize_date(fecha_nacimiento)
+    sr_data = abu_client.solar_return(fecha_iso, lat, lon, year=anio if anio > 0 else None)
+
+    # La respuesta del engine ya tiene un buen shape. Solo anotamos fuente.
+    sr_data["fuente"] = "abu-engine /api/astro/solar-return"
+    return sr_data
+
+
+@mcp.tool()
 def lunaciones_eclipses(
     fecha_nacimiento: str, lat: float, lon: float = 0.0, momento: str = ""
 ) -> dict[str, Any]:

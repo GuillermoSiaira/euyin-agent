@@ -61,6 +61,13 @@ def chart_detailed(date_iso: str, lat: float, lon: float) -> dict:
     )
 
 
+def chart_extended(date_iso: str, lat: float, lon: float) -> dict:
+    """
+    GET /api/astro/chart/extended — carta natal doctrinal completa (protegido).
+    """
+    return _get("/api/astro/chart/extended", {"date": date_iso, "lat": lat, "lon": lon})
+
+
 def biography(birth_date_iso: str, birth_lat: float, birth_lon: float) -> dict:
     """
     GET /api/astro/biography — línea temporal biográfica completa:
@@ -71,6 +78,18 @@ def biography(birth_date_iso: str, birth_lat: float, birth_lon: float) -> dict:
         "/api/astro/biography",
         {"birthDate": birth_date_iso, "birthLat": birth_lat, "birthLon": birth_lon},
     )
+
+
+def solar_return(
+    birth_date_iso: str, lat: float, lon: float, year: int | None = None
+) -> dict:
+    """
+    GET /api/astro/solar-return — carta de la revolución solar (protegido).
+    """
+    params: dict[str, Any] = {"birthDate": birth_date_iso, "lat": lat, "lon": lon}
+    if year:
+        params["year"] = year
+    return _get("/api/astro/solar-return", params)
 
 
 def lunar(
