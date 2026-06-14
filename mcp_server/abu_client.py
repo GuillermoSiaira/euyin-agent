@@ -73,6 +73,22 @@ def biography(birth_date_iso: str, birth_lat: float, birth_lon: float) -> dict:
     )
 
 
+def lunar(
+    birth_date_iso: str, lat: float, lon: float, query_dt: str | None = None
+) -> dict | None:
+    """
+    GET /api/astro/lunar — lunaciones y eclipses próximos relativos a una carta natal.
+    None si el endpoint no existe.
+    """
+    try:
+        params: dict[str, Any] = {"birthDate": birth_date_iso, "lat": lat, "lon": lon}
+        if query_dt:
+            params["dt"] = query_dt
+        return _get("/api/astro/lunar", params)
+    except AbuEngineError:
+        return None
+
+
 def mundana_sky() -> dict | None:
     """
     GET /api/mundana/sky — cielo colectivo + configuraciones mundanas con
@@ -89,6 +105,17 @@ def mundana_forecast(days: int = 14) -> dict | None:
     """GET /api/mundana/forecast — configuraciones próximas. None si no existe."""
     try:
         return _get("/api/mundana/forecast", {"days": max(1, min(days, 365))})
+    except AbuEngineError:
+        return None
+
+
+def mundana_history(config_type: str | None = None) -> dict | None:
+    """GET /api/mundana/history — contexto histórico de configuraciones. None si no existe."""
+    try:
+        params = {}
+        if config_type:
+            params["config_type"] = config_type
+        return _get("/api/mundana/history", params)
     except AbuEngineError:
         return None
 

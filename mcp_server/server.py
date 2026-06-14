@@ -340,6 +340,76 @@ def consultar_biblioteca(
     return out
 
 
+@mcp.tool()
+def lunaciones_eclipses(
+    fecha_nacimiento: str, lat: float, lon: float = 0.0, momento: str = ""
+) -> dict[str, Any]:
+    """
+    Pulso lunar (lunaciones, eclipses) relativo a una CARTA NATAL.
+
+    Calcula la fase lunar para un momento dado (`momento`, default=ahora) y
+    proyecta las próximas lunaciones y eclipses, indicando en qué CASA NATAL
+    del nativo (definido por `fecha_nacimiento`, `lat`, `lon`) caerán.
+
+    Args:
+        fecha_nacimiento: ISO de nacimiento (YYYY-MM-DD o con hora). Requerido.
+        lat: Latitud natal decimal. Requerido.
+        lon: Longitud natal decimal (default 0 = Greenwich).
+        momento: Opcional. Fecha/hora ISO para la que se calcula la fase lunar
+                 actual (default: ahora).
+
+    Returns:
+        {sol, luna, fase, proxima_nueva, proxima_llena, proximo_eclipse_solar,
+         proximo_eclipse_lunar, fuente} | {error}
+    """
+    birth_date_iso = abu_client.normalize_date(fecha_nacimiento)
+    query_dt_iso = abu_client.normalize_date(momento) if momento else None
+    lunar_data = abu_client.lunar(birth_date_iso, lat, lon, query_dt=query_dt_iso)
+
+    if lunar_data is None:
+        return {
+            "error": "El endpoint /api/astro/lunar no está disponible en el engine.",
+            "fuente": "abu-engine",
+        }
+
+    lunar_data["fuente"] = "abu-engine /api/astro/lunar"
+    return lunar_data
+
+
+@mcp.tool()
+def mundana_pronostico(dias: int = 90, tipo_config: str = "") -> dict[str, Any]:
+    """
+    Pronóstico de astrología mundana: configuraciones activas, próximas e históricas.
+
+    Combina tres endpoints del motor de astrología mundana (si está desplegado):
+    1. /sky: configuraciones activas ahora (con p-value/densidad).
+    2. /forecast: configuraciones que se perfeccionarán en los próximos `dias`.
+    3. /history: contexto histórico para un `tipo_config` (ej. "Marte-Saturno").
+
+    Args:
+        dias: Días hacia adelante para el pronóstico (default 90).
+        tipo_config: Opcional. Filtra el contexto histórico por un tipo de
+                     configuración (ej. "Júpiter-Urano").
+
+    Returns:
+        {cielo_actual, pronostico, contexto_historico, fuente}
+    """
+    sky = abu_client.mundana_sky()
+    forecast = abu_client.mundana_forecast(dias)
+    history = abu_client.mundana_history(tipo_config if tipo_config else None)
+
+    available = sky is not None or forecast is not None or history is not None
+
+    return {
+        "cielo_actual": sky,
+        "pronostico": forecast,
+        "contexto_historico": history,
+        "fuente": "abu-engine /api/mundana/*"
+        if available
+        else "abu-engine (mundana no desplegada en esta imagen)",
+    }
+
+
 if __name__ == "__main__":
     import os
     # Transport se controla con env var MCP_TRANSPORT=sse|stdio (default: stdio).
