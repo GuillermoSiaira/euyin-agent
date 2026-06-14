@@ -93,9 +93,17 @@ gantt
 - `f03 (repo público sanitizado, sin fixtures personales ni secretos) → p5 (directorios)`
 - `h1 (export NotebookLM — solo G) → h2`. Impl. `h4 → h5 → h6` (acumulativo
   top-down por nivel doctrinal). Corpus `h3` corre en paralelo y bloquea el test
-  espacial de `h7`. `h7 → h8`. Si la compuerta NO pasa por nivel, ese nivel no
-  entra y el HF sale "en validación" (regla content_generator: capacidad, no
-  números). **El HF no se ofrece hasta cerrar completitud (h2-h6) Y confianza (h8).**
+  espacial de `h7`. `h7 → h8`.
+
+> **ESTADO HF — RESUELTO h8 (2026-06-14): NO-GO de v7, HF sale "en validación".**
+> El backtest (h1-h5 + h6a implementados, h7 corrido) dio no-go: ningún operador
+> pasa el criterio preregistrado. PERO por datos/diseño, no refutación (pocos
+> negativos, fechas imprecisas, el runner testeó tránsito no natal). Decisión de G:
+> el HF **NO frena el lanzamiento** — el tier pago lidera con lo doctrinal/Lilly;
+> el HF sale exploratorio honesto. La **validación es trabajo manual de G**
+> (corpus correcto: fechado, ubicado, balanceado) post-lanzamiento. **h6b (parans
+> N3c + N5) PARADO** — no construir más operadores hasta que la validación tenga
+> datos. Detalle: `obsidian_vault/05_resultados/HF_V7_BACKTEST_H8.md` + memoria.
 - `p2/p3 → p7 → l3` · `p6 → l1` · julio Rx = preparar, NO lanzar; agosto = lanzar
 
 ## Postergado explícito (disciplina de foco)
