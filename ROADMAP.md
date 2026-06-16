@@ -4,7 +4,7 @@
 > Estrategia base: diálogo monetización post-MCP (2026-06-12). Objetivo:
 > **lanzamiento agosto 2026** — Genesis Access a la venta + MCP público.
 > Calibración: días/sesiones. Owners: **G** = Guillermo (decisiones, deploys,
-> publicación) · **F** = Fable/Claude Code (arquitectura, juicio, specs) ·
+> publicación) · **F** = Claude Code (Opus 4.8) (arquitectura, juicio, specs) ·
 > **A** = agente delegado vía spec (**Antigravity o Aider+Vertex AI**, indistinto —
 > mismo criterio: espec-able y verificable se delega; juicio doctrinal/auth no).
 
@@ -69,6 +69,22 @@ gantt
   Impl. N3c-N5: parans + ángulos + tránsito (A)  :h6, 2026-06-27, 8d
   Backtest ablación 2 corpus (A+F)               :h7, 2026-07-05, 6d
   Compuerta HF por nivel: pasa/no pasa (G)       :h8, 2026-07-11, 2d
+
+  section F1.5 · Imprevistos pre-relanzamiento (14-jun · done)
+  Fix dignidad tradicional + mundana fecha + METER-01 (A+F) :done, x1, 2026-06-14, 1d
+  Fix crash deploy engine — imports abu_engine.* (F)        :done, x2, 2026-06-14, 1d
+  Fix lunar — Nueva/Llena misma fecha (F)                   :done, x3, 2026-06-14, 1d
+  Switch costo: todos→Gemini + toggle proveedor operador (A+F) :done, x4, 2026-06-14, 1d
+  Bug #5 dias-en-transitos + #11 brevedad saludo (A)        :done, x5, 2026-06-14, 1d
+  Free-tier alineado en 7 + BUG-09 errores form (A+F)       :done, x6, 2026-06-14, 1d
+
+  section F1.6 · Switch a Gemini + calidad (15-jun · done)
+  Ruteo todos→Gemini · Vertex · modelo flash (A+F)          :done, y1, 2026-06-15, 1d
+  HARDENING completeLillyGemini (retry/cont/vacío) (A+F)    :done, y2, 2026-06-15, 1d
+  isDemo: memoria fuera de cartas demo (A+F)                :done, y3, 2026-06-15, 1d
+  Precisión temporal (3 estados + distancia humana) (A+F)   :done, y4, 2026-06-15, 1d
+  Localización planetas + summarización Gemini (A+F)        :done, y5, 2026-06-15, 1d
+  Diseño agéntico web (vista_actual · fases · impl pend.) (F) :active, y6, 2026-06-15, 1d
 
   section F2 · Rx julio — preparar (1-31 jul)
   P0s engine — bugs vía specs (A)                :p1, 2026-07-01, 6d

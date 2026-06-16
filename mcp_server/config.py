@@ -51,8 +51,24 @@ ABU_DOCTRINE_ROOT: Path = Path(
 ABU_HTTP_TIMEOUT: float = float(os.environ.get("ABU_HTTP_TIMEOUT", "45"))
 
 
+def _caller_api_key() -> str | None:
+    try:
+        from mcp.server.lowlevel.server import request_ctx  # contextvar nativo de MCP
+        rc = request_ctx.get()              # LookupError si no hay request (stdio)
+        req = getattr(rc, "request", None)  # Starlette Request en transports HTTP
+        if req is not None:
+            return req.headers.get("x-abu-api-key")
+    except (LookupError, Exception):
+        return None
+    return None
+
+
 def auth_headers() -> dict[str, str]:
     """Headers de autenticación según lo configurado (service key y/o bearer)."""
+    key = _caller_api_key()
+    if key is not None:
+        return {"X-Abu-Api-Key": key}
+
     headers: dict[str, str] = {}
     if ABU_SERVICE_KEY:
         headers["X-Abu-Service-Key"] = ABU_SERVICE_KEY

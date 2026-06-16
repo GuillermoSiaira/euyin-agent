@@ -1,0 +1,11 @@
+# No subir al build context de Cloud Build (el Dockerfile solo necesita mcp_server/ + requirements.txt)
+.venv/
+**/__pycache__/
+**/*.pyc
+.git/
+.gitignore
+*.md
+specs/
+tests/
+.env
+.env.*

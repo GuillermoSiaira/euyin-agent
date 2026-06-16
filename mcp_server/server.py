@@ -28,8 +28,14 @@ import doctrine
 
 # Puerto leído aquí (nivel de módulo) para que el argumento explícito
 # al constructor tome el valor de FASTMCP_PORT antes de que lo fije en 8000.
-_port = int(os.environ.get("FASTMCP_PORT", "8001"))
-mcp = FastMCP("abu-oracle", port=_port)
+_port = int(os.environ.get("PORT") or os.environ.get("FASTMCP_PORT", "8001"))
+_transport = os.environ.get("MCP_TRANSPORT", "stdio")
+mcp = FastMCP(
+    "abu-oracle",
+    host=("0.0.0.0" if _transport != "stdio" else "127.0.0.1"),
+    port=_port,
+    stateless_http=(_transport != "stdio")
+)
 
 
 def _configuraciones_desde_aspectos(aspectos: list[dict]) -> list[dict]:

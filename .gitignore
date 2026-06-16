@@ -28,3 +28,4 @@ Desktop.ini
 
 # Skill workspace outputs (eval runs — large, not source)
 skills/lilly-interpretacion-workspace/
+.aider*
